@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import '../../data/model/story.dart';
 import '../icons/liked.dart';
 import '../icons/unliked.dart';
-import 'package:flut_app/domain/repository/favourite_repository_impl.dart';
 
 import 'package:flut_app/core/providers.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -11,10 +10,10 @@ part 'favourites.g.dart';
 
 @riverpod
 class FavoritesState extends _$FavoritesState {
+  late List<Story> list;
   @override
   Future<List<Story>> build() async {
-    List<Story> list =
-    await ref.read(favoriteRepositoryProvider).getLiked();
+    list = await ref.read(favoriteRepositoryProvider).getLiked();
     return list;
   }
 
@@ -27,21 +26,23 @@ class FavoritesState extends _$FavoritesState {
       }
     }
     if (isUnique) {
+      //list.add(item);
       ref.read(favoriteRepositoryProvider).addItem(item);
     }
   }
 
   void deleteItem(Story item) async {
+    //list.remove(item);
     ref.read(favoriteRepositoryProvider).deleteItem(item);
   }
 
-  bool isLiked(Story item, List<Story> list) {
-    bool like = false;
-    for (int i = 0; i < list.length; i++) {
-      if (list[i] == item) {
-        like = true;
-      }
-    }
+  void toggleLike(Story item) async {
+    ref.read(favoriteRepositoryProvider).toggleLike(item);
+    state = AsyncValue.data(ref.read(favoriteRepositoryProvider).getLiked());
+  }
+
+  bool isLiked(Story item) {
+    bool like = ref.read(favoriteRepositoryProvider).isLiked(item);
     return like;
   }
 }

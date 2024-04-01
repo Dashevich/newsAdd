@@ -34,6 +34,6 @@ class FavouriteDataRepository implements FavouriteData {
 
   @override
   bool isLikedData(Story item) {
-    return (liked.indexOf(item) == -1);
+    return (liked.indexOf(item) != -1);
   }
 }

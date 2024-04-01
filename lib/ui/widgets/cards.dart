@@ -10,7 +10,7 @@ import '../providers/favourites.dart';
 class newsCards extends ConsumerWidget {
   Story story;
 
-  newsCards(this.story);
+  newsCards(this.story, {super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -83,24 +83,18 @@ class newsCards extends ConsumerWidget {
 
 class likeWidget extends ConsumerWidget {
   Story story;
-  likeWidget(this.story);
+  likeWidget(this.story, {super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    List<Story> favorites = ref
-        .watch(favoritesStateProvider)
-        .value ?? [];
-    bool favorite = ref.watch(favoritesStateProvider.notifier).isLiked(story, favorites);
+    List<Story> favorite = ref.watch(favoritesStateProvider).value ?? [];
     return Row(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
           IconButton(
-            icon: favorite ? iconLiked : iconUnliked,
+            icon: ref.read(favoritesStateProvider.notifier).isLiked(story) ? iconLiked : iconUnliked,
             onPressed: () {
-              favorite
-                  ? ref.read(favoritesStateProvider.notifier).deleteItem(story)
-                  : ref.read(favoritesStateProvider.notifier).addItem(story);
-              //setState(() => this.listData = data);
+              ref.read(favoritesStateProvider.notifier).toggleLike(story);
               },
           )
         ]
